@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+{% block nav_add %}
+    {% if user_obj == user %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:change_profile' user_obj.pk %}">Update profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url "accounts:password_change" %}">Change password</a>
+        </li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <div class="card flex-row mt-3">
+        {% if user_obj.profile.avatar %}
+            <img src="{{ user_obj.profile.avatar.url }}" class="card-img-top w-25" alt="...">
+        {% endif %}
+        <div class="card-body ms-5">
+            <h5 class="card-title">Username: {{ user_obj.username }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">First name: {{ user_obj.first_name }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Last name: {{ user_obj.last_name }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Birthday: {{ user_obj.profile.birthday }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">E-mail: {{ user_obj.email }}</h6>
+        </div>
+
+    </div>
+
+{% endblock %}
