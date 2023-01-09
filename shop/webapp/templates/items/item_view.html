@@ -1,0 +1,61 @@
+{% extends "base.html"%}
+{% load static %}
+{% block title %}Detailed info{% endblock %}
+{% block nav_add %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "create_item" %}">Add item</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "update_item" item.pk %}">Update item</a>
+    </li>
+    <li class="nav-item">
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#ItemDeleteModal">Delete item</button>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "add_item_basket" item.pk %}">Add to cart</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "basket_view" %}">My cart</a>
+    </li>
+{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="card mt-4" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Item: {{ item.name }}</h5>
+            <p class="card-text">Description: {{ item.description }}</p>
+            <p class="card-text">Category: {{ item.get_category_display }}</p>
+            <p class="card-text">Balance: {{ item.balance }} pieces</p>
+            <p class="card-text">Price: {{ item.price }}</p>
+            <form action="{% url 'add_item_basket' item.pk %}" method="post">
+                {% csrf_token %}
+                {%  include 'partial/form2.html' with button_text='Add to cart'%}
+{#              <button type="submit" class="btn btn-outline-secondary" value="Добавить в корзину">Добавить в корзину</button>#}
+            </form>
+        </div>
+    </div>
+</div>
+
+ <div class="modal fade" id="ItemDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ItemDeleteModal">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to remove item {{ item.name }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <form action="{% url "delete_item" item.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
