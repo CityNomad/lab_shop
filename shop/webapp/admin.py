@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from webapp.models import Item, Basket, ItemsOrders, Order
+from webapp.models import Item, ItemsOrders, Order
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -15,14 +15,14 @@ class ItemAdmin(admin.ModelAdmin):
 admin.site.register(Item, ItemAdmin)
 
 
-class BasketAdmin(admin.ModelAdmin):
-    list_display = ['id', 'item', 'amount']
-    list_display_links = ['item']
-    list_filter = ['item']
-    fields = ['item', 'amount']
-
-
-admin.site.register(Basket, BasketAdmin)
+# class BasketAdmin(admin.ModelAdmin):
+#     list_display = ['id', 'item', 'amount']
+#     list_display_links = ['item']
+#     list_filter = ['item']
+#     fields = ['item', 'amount']
+#
+#
+# admin.site.register(Basket, BasketAdmin)
 
 
 class ItemsOrdersInLine(admin.TabularInline):
@@ -40,9 +40,6 @@ admin.site.register(ItemsOrders, ItemsOrdersAdmin)
 
 
 class OrderAdmin(admin.ModelAdmin):
-    def get_items(self):
-        items = Basket.objects.all()
-        return items
 
     inlines = [
         ItemsOrdersInLine

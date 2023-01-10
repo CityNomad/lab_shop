@@ -24,18 +24,18 @@ class Item(models.Model):
         verbose_name_plural = "Items"
 
 
-class Basket(models.Model):
-    item = models.ForeignKey('webapp.Item', on_delete=models.CASCADE,
-                             related_name='baskets', verbose_name="Item")
-    amount = models.PositiveIntegerField(verbose_name="Amount")
-
-    def __str__(self):
-        return f"{self.id}. {self.item}: {self.amount}"
-
-    class Meta:
-        db_table = "basket"
-        verbose_name = "Basket"
-        verbose_name_plural = "Baskets"
+# class Basket(models.Model):
+#     item = models.ForeignKey('webapp.Item', on_delete=models.CASCADE,
+#                              related_name='baskets', verbose_name="Item")
+#     amount = models.PositiveIntegerField(verbose_name="Amount")
+#
+#     def __str__(self):
+#         return f"{self.id}. {self.item}: {self.amount}"
+#
+#     class Meta:
+#         db_table = "basket"
+#         verbose_name = "Basket"
+#         verbose_name_plural = "Baskets"
 
 
 class Order(models.Model):

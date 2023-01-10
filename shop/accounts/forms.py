@@ -35,3 +35,5 @@ class ProfileChangeForm(forms.ModelForm):
         model = Profile
         fields = ['avatar', 'birthday']
 
+
+
