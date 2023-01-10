@@ -1,102 +1,124 @@
-from django.shortcuts import redirect, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404, HttpResponseRedirect, render
 from django.urls import reverse
-from django.views.generic import TemplateView, ListView, DeleteView
+from django.views import View
+from django.views.generic import TemplateView, ListView, DeleteView, CreateView
 
 # Create your views here.
 
-from webapp.models import Item, ItemsOrders
+from webapp.models import Item, ItemsOrders, Order
 from webapp.forms import ItemForm, SearchForm, OrderForm
 
 
-# def add_item_basket(request, pk):
-#     item = get_object_or_404(Item, pk=pk)
-#     Basket.objects.all()
-#
-#     if request.method == "POST":
-#         user_amount = request.POST.get('amount')
-#         if item.balance != 0:
-#             try:
-#                 product = get_object_or_404(Basket, item_id=item.pk)
-#                 old_amount = product.amount
-#                 new_amount = int(old_amount) + int(user_amount)
-#
-#                 if item.balance > new_amount:
-#                     Basket.objects.filter(item_id=item.pk).update(amount=new_amount)
-#                 else:
-#                     new_amount = item.balance
-#                     Basket.objects.filter(item_id=item.pk).update(amount=new_amount)
-#             except:
-#                 Basket.objects.create(item_id=pk, amount=user_amount)
-#         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-#
-#     elif request.method == "GET":
-#         item = get_object_or_404(Item, pk=pk)
-#         amount = 1
-#         if item.balance != 0:
-#             try:
-#                 product = get_object_or_404(Basket, item_id=item.pk)
-#                 new_amount = int(product.amount) + amount
-#
-#                 if item.balance > new_amount:
-#                     Basket.objects.filter(item_id=item.pk).update(amount=new_amount)
-#                 else:
-#                     new_amount = item.balance
-#                     Basket.objects.filter(item_id=item.pk).update(amount=new_amount)
-#             except:
-#                 Basket.objects.create(item_id=pk, amount=amount)
-#         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+class AddToCart(View):
+
+    def get(self, request, *args, **kwargs):
+        quantity = 0
+        pk = self.kwargs.get('pk')
+        if not request.session.get('pk') or not request.session.get('qty'):
+            request.session['pk'] = []
+            request.session['qty'] = []
+        id_list = request.session['pk']
+        qty_list = request.session['qty']
+        if pk not in request.session['pk']:
+            id_list.append(pk)
+            product = get_object_or_404(Item, pk=pk)
+            if product.balance != 0:
+                qty = quantity + 1
+                qty_list.append(qty)
+
+        elif pk in id_list:
+            product = get_object_or_404(Item, pk=pk)
+            if product.balance != 0:
+                index = id_list.index(pk)
+                qty = qty_list[index]
+                qty = qty + 1
+                qty_list[index] = qty
+
+        request.session['pk'] = id_list
+        request.session['qty'] = qty_list
+
+        return redirect(reverse('webapp:index'))
 
 
-# class BasketView(ListView):
-#     model = Basket
-#     template_name = "baskets/basket_view.html"
-#     context_object_name = "baskets"
-#
-#     def get_total(self):
-#         baskets = Basket.objects.all()
-#         for product in baskets:
-#             total = product.amount * product.item.price
-#             product.total = total
-#             product.save()
-#         return baskets
-#
-#     def get_overall(self):
-#         overall = 0
-#         baskets = Basket.objects.all()
-#         for product in baskets:
-#             total = product.amount * product.item.price
-#             overall += total
-#         return overall
-#
-#     def get_queryset(self):
-#         return Basket.objects.all()
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['baskets'] = self.get_total()
-#         context['overall'] = self.get_overall()
-#         context['form'] = OrderForm
-#         return context
-#
-#
-# class DeleteFromBasket(DeleteView):
-#     model = Basket
-#
-#     def get(self, request, *args, **kwargs):
-#         return self.delete(request, *args, **kwargs)
-#
-#     def get_success_url(self):
-#         return reverse('basket_view')
-#
-#
-# def delete_one_by_one(request, pk):
-#     product = get_object_or_404(Basket, pk=pk)
-#     if product.amount > 1:
-#         product.amount = product.amount - 1
-#         product.save()
-#     else:
-#         Basket.objects.filter(pk=pk).delete()
-#
-#     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-#
-#
+class Cart(TemplateView):
+    template_name = 'carts/cart.html'
+
+    def get(self, request, *args, **kwargs):
+        items = []
+        amount = 0
+        total_sum = []
+        form = OrderForm
+        if request.session.get('pk'):
+            id_list = request.session['pk']
+            qty_list = request.session['qty']
+            i = 0
+
+            for pk in id_list:
+                item = get_object_or_404(Item, pk=pk)
+                items.append(item)
+                p_sum = item.price * qty_list[i]
+                total_sum.append(p_sum)
+                i += 1
+
+            for i in total_sum:
+                amount += i
+            request.session['pk'] = id_list
+            request.session['qty'] = qty_list
+
+        return render(request, 'carts/cart.html', {'items': items, 'amount': amount,
+                                                   'form': form, 'total_sum': total_sum})
+
+
+class DeleteFromCart(TemplateView):
+
+    template_name = 'carts/delete.html'
+    context_object_name = 'item'
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        id_list = request.session.get('pk')
+        index = id_list.index(pk)
+        id_list.remove(pk)
+        qty_list = request.session.get('qty')
+        q = qty_list[index]
+        qty_list.remove(q)
+        request.session['pk'] = id_list
+        request.session['qty'] = qty_list
+
+        return redirect('webapp:cart')
+
+
+class CreateOrder(CreateView):
+    model = Order
+    template_name = 'carts/cart.html'
+    form_class = OrderForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        if self.request.user.is_authenticated:
+            self.object.user = self.request.user
+        ordercart = ItemsOrders
+        for i in range(len(self.request.session['pk'])):
+            ordercart.objects.create(quantity=self.request.session['qty'][i],
+                                     order_id=self.object.pk, product_id=self.request.session['pk'][i])
+        id_list = self.request.session['pk']
+        id_list.clear()
+        self.request.session['pk'] = id_list
+        qty_list = self.request.session['qty']
+        qty_list.clear()
+        self.request.session['pk'] = qty_list
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('webapp:index')
+
+
+class OrderView(ListView):
+    template_name = 'carts/orderview.html'
+    model = Order
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        pk = self.request.user.pk
+        return Order.objects.filter(user_id=pk)
+
