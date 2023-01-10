@@ -27,7 +27,7 @@ class IndexView(ListView):
         if self.search_value:
             return Item.objects.filter(
                 Q(name__icontains=self.search_value) | Q(description__icontains=self.search_value))
-        return Item.objects.filter(balance__gt=0).order_by(('category'), ('name').lower())
+        return Item.objects.filter(balance__gt=0)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
@@ -70,6 +70,7 @@ class CreateItem(CreateView):
     template_name = 'items/create_item.html'
     model = Item
     form_class = ItemForm
+    permission_required = 'webapp.add_item'
 
     def get_success_url(self):
         return reverse('item_view', kwargs={'pk': self.object.pk})
@@ -80,6 +81,7 @@ class UpdateItem(UpdateView):
     form_class = ItemForm
     context_object_name = 'item'
     template_name = 'items/update.html'
+    permission_required = 'webapp.change_item'
 
     def get_success_url(self):
         return reverse('item_view', kwargs={'pk': self.object.pk})
@@ -89,3 +91,4 @@ class DeleteItem(DeleteView):
     model = Item
     context_object_name = 'item'
     success_url = reverse_lazy('index')
+    permission_required = 'webapp.delete_item'
