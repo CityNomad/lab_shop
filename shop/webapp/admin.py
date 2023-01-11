@@ -15,16 +15,6 @@ class ItemAdmin(admin.ModelAdmin):
 admin.site.register(Item, ItemAdmin)
 
 
-# class BasketAdmin(admin.ModelAdmin):
-#     list_display = ['id', 'item', 'amount']
-#     list_display_links = ['item']
-#     list_filter = ['item']
-#     fields = ['item', 'amount']
-#
-#
-# admin.site.register(Basket, BasketAdmin)
-
-
 class ItemsOrdersInLine(admin.TabularInline):
     model = ItemsOrders
 

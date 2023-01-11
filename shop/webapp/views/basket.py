@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, CreateView
 
 from webapp.models import Item, ItemsOrders, Order
-from webapp.forms import  OrderForm
+from webapp.forms import OrderForm
 
 
 class AddToCart(View):
@@ -128,7 +128,7 @@ def delete_one_by_one(request, pk):
         request.session['qty'] = qty_list
     else:
         id_list.remove(pk)
-        qty_list.remove(q)
+        qty_list.remove(quantity)
         request.session['pk'] = id_list
         request.session['qty'] = qty_list
 
@@ -144,10 +144,10 @@ class Checkout(CreateView):
         self.object = form.save()
         if self.request.user.is_authenticated:
             self.object.user = self.request.user
-        ordercart = ItemsOrders
+        order = ItemsOrders
         for i in range(len(self.request.session['pk'])):
-            ordercart.objects.create(quantity=self.request.session['qty'][i],
-                                     order_id=self.object.pk, product_id=self.request.session['pk'][i])
+            order.objects.create(quantity=self.request.session['qty'][i], order_id=self.object.pk,
+                                 item_id=self.request.session['pk'][i])
         id_list = self.request.session['pk']
         id_list.clear()
         self.request.session['pk'] = id_list
@@ -162,9 +162,9 @@ class Checkout(CreateView):
 
 class OrderView(ListView):
     template_name = 'carts/orderview.html'
-    model = Order
-    context_object_name = 'orders'
+    model = ItemsOrders
+    context_object_name = 'itemsorders'
 
-    def get_queryset(self):
-        pk = self.request.user.pk
-        return Order.objects.filter(user_id=pk)
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user.username
+        return ItemsOrders.objects.filter(order__username=user)

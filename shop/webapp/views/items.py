@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView
 from django.db.models import Q
 from django.utils.http import urlencode
-# Create your views here.
 
-from webapp.models import Item, CATEGORIES_CHOICES
+from webapp.models import Item
 from webapp.forms import ItemForm, SearchForm, AddToBasketForm
 
 

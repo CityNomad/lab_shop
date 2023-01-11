@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My orders{% endblock %}
+{% block content %}
+    <div class="container">
+        {% for order in itemsorders %}
+               <div class="card -flex col-md-6  col-lg-6" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Order  {{ forloop.counter }}</h5>
+                                <p>Item: {{ order.item.name }}</p>
+                                <p>Quantity: {{ order.quantity }}</p>
+                                <p>Date of purchase: {{ order.order.created_at }}</p>
+                        </div>
+                    </div>
+
+            {% endfor %}
+    </div>
+{% endblock %}
