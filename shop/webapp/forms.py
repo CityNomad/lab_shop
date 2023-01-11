@@ -29,4 +29,4 @@ class OrderForm(forms.ModelForm):
 
 
 class AddToBasketForm(forms.Form):
-    amount = forms.IntegerField(label="Amount:")
+    qty = forms.IntegerField(label="Choose amount:")

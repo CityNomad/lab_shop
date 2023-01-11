@@ -73,7 +73,7 @@ class CreateItem(CreateView):
     permission_required = 'webapp.add_item'
 
     def get_success_url(self):
-        return reverse('item_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:item_view', kwargs={'pk': self.object.pk})
 
 
 class UpdateItem(UpdateView):
@@ -84,11 +84,11 @@ class UpdateItem(UpdateView):
     permission_required = 'webapp.change_item'
 
     def get_success_url(self):
-        return reverse('item_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:item_view', kwargs={'pk': self.object.pk})
 
 
 class DeleteItem(DeleteView):
     model = Item
     context_object_name = 'item'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('webapp:index')
     permission_required = 'webapp.delete_item'

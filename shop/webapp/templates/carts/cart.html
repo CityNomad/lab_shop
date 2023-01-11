@@ -1,0 +1,48 @@
+{% extends "base.html"%}
+{% load static %}
+{% block title %}My cart{% endblock %}
+{% block content %}
+    <div class="container">
+    <div><h1>My cart:</h1></div>
+        <table class="table">
+        <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Item</th>
+              <th scope="col">Price</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Total</th>
+              <th scope="col"></th>
+            </tr>
+  {% for item in items %}
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ item.name }}</td>
+              <td>{{ item.price }}</td>
+              <td>{{ item.qty }} <a href="{% url "webapp:delete_one_from_cart" item.pk %}"><i class="bi bi-trash3"></i></a></td>
+              <td>{{ item.items_sum }}</td>
+
+              <th scope="col"><a href="{% url "webapp:delete_from_cart" item.pk %}"><i class="bi bi-trash3"></i></a> </th>
+            </tr>
+      {% empty %}
+      <h5>Your cart is empty</h5>
+  {% endfor %}
+            <tr>
+              <th scope="row"></th>
+              <td><h5>Total</h5></td>
+              <th scope="row"></th>
+              <th scope="row"></th>
+             <td>{{ total_sum }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+            <form action="{% url 'webapp:checkout' %}" method="post">
+            {% include "partial/form.html" with button_text="Checkout" %}
+        </form>
+        </div>
+    </div>
+
+{% endblock %}

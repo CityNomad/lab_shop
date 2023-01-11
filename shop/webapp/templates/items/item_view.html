@@ -2,21 +2,24 @@
 {% load static %}
 {% block title %}Detailed info{% endblock %}
 {% block nav_add %}
+    {% if pers.webapp.add_item or perms.webapp.change_item or perms.webapp.delete_item %}
     <li class="nav-item">
-        <a class="nav-link" href="{% url "create_item" %}">Add item</a>
+        <a class="nav-link" href="{% url "webapp:create_item" %}">Add item</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url "update_item" item.pk %}">Update item</a>
+        <a class="nav-link" href="{% url "webapp:update_item" item.pk %}">Update item</a>
     </li>
     <li class="nav-item">
         <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#ItemDeleteModal">Delete item</button>
     </li>
+    {% endif %}
     <li class="nav-item">
-        <a class="nav-link" href="{% url "add_item_basket" item.pk %}">Add to cart</a>
+        <a class="nav-link" href="{% url "webapp:add_to_cart" item.pk %}">Add to cart</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url "basket_view" %}">My cart</a>
+        <a class="nav-link" href="{% url "webapp:cart" %}">My cart</a>
     </li>
+
 {% endblock %}
 {% block content %}
 
@@ -28,7 +31,7 @@
             <p class="card-text">Category: {{ item.get_category_display }}</p>
             <p class="card-text">Balance: {{ item.balance }} pieces</p>
             <p class="card-text">Price: {{ item.price }} $</p>
-            <form action="{% url 'add_item_basket' item.pk %}" method="post">
+            <form action="{% url 'webapp:add_to_cart' item.pk %}" method="post">
                 {% csrf_token %}
                 {%  include 'partial/form2.html' with button_text='Add to cart'%}
             </form>
@@ -49,7 +52,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <form action="{% url "delete_item" item.pk %}" method="post">
+                    <form action="{% url "webapp:delete_item" item.pk %}" method="post">
                         {% csrf_token %}
                         <button type="submit">Yes</button>
                     </form>

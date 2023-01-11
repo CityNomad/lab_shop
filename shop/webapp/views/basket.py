@@ -1,15 +1,41 @@
 from django.shortcuts import redirect, get_object_or_404, HttpResponseRedirect, render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, ListView, DeleteView, CreateView
-
-# Create your views here.
+from django.views.generic import TemplateView, ListView, CreateView
 
 from webapp.models import Item, ItemsOrders, Order
-from webapp.forms import ItemForm, SearchForm, OrderForm
+from webapp.forms import  OrderForm
 
 
 class AddToCart(View):
+
+    def post(self, request, *args, **kwargs):
+        quantity = 0
+        pk = self.kwargs.get('pk')
+        if not request.session.get('pk') or not request.session.get('qty'):
+            request.session['pk'] = []
+            request.session['qty'] = []
+        id_list = request.session['pk']
+        qty_list = request.session['qty']
+        if pk not in request.session['pk']:
+            id_list.append(pk)
+            item = get_object_or_404(Item, pk=pk)
+            if item.balance != 0:
+                qty = quantity + 1
+                qty_list.append(qty)
+
+        elif pk in id_list:
+            product = get_object_or_404(Item, pk=pk)
+            if product.balance != 0:
+                index = id_list.index(pk)
+                qty = qty_list[index]
+                qty = qty + 1
+                qty_list[index] = qty
+
+        request.session['pk'] = id_list
+        request.session['qty'] = qty_list
+
+        return redirect(reverse('webapp:index'))
 
     def get(self, request, *args, **kwargs):
         quantity = 0
@@ -45,8 +71,8 @@ class Cart(TemplateView):
 
     def get(self, request, *args, **kwargs):
         items = []
-        amount = 0
-        total_sum = []
+        total_sum = 0
+        items_sum = []
         form = OrderForm
         if request.session.get('pk'):
             id_list = request.session['pk']
@@ -54,41 +80,62 @@ class Cart(TemplateView):
             i = 0
 
             for pk in id_list:
+                product = dict()
                 item = get_object_or_404(Item, pk=pk)
-                items.append(item)
-                p_sum = item.price * qty_list[i]
-                total_sum.append(p_sum)
+                # item['qty'] = qty_list[i]
+                product['name'] = item.name
+                product['pk'] = item.pk
+                product['price'] = item.price
+                qty = qty_list[i]
+                product['qty'] = qty
+                p_sum = item.price * qty
+                product['items_sum'] = p_sum
+                items_sum.append(p_sum)
+                items.append(product)
                 i += 1
-
-            for i in total_sum:
-                amount += i
+                print(product)
+            for k in items_sum:
+                total_sum += k
             request.session['pk'] = id_list
             request.session['qty'] = qty_list
+        print(items)
+        return render(request, 'carts/cart.html', {'items': items, 'total_sum': total_sum,
+                                                   'form': form})
 
-        return render(request, 'carts/cart.html', {'items': items, 'amount': amount,
-                                                   'form': form, 'total_sum': total_sum})
+
+def delete_from_cart(request, pk):
+    id_list = request.session.get('pk')
+    index = id_list.index(pk)
+    id_list.remove(pk)
+    qty_list = request.session.get('qty')
+    quantity = qty_list[index]
+    qty_list.remove(quantity)
+    request.session['pk'] = id_list
+    request.session['qty'] = qty_list
+
+    return redirect('webapp:cart')
 
 
-class DeleteFromCart(TemplateView):
-
-    template_name = 'carts/delete.html'
-    context_object_name = 'item'
-
-    def post(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        id_list = request.session.get('pk')
-        index = id_list.index(pk)
+def delete_one_by_one(request, pk):
+    id_list = request.session.get('pk')
+    index = id_list.index(pk)
+    qty_list = request.session.get('qty')
+    quantity = qty_list[index]
+    if quantity > 1:
+        new_quantity = quantity - 1
+        qty_list[index] = new_quantity
+        request.session['pk'] = id_list
+        request.session['qty'] = qty_list
+    else:
         id_list.remove(pk)
-        qty_list = request.session.get('qty')
-        q = qty_list[index]
         qty_list.remove(q)
         request.session['pk'] = id_list
         request.session['qty'] = qty_list
 
-        return redirect('webapp:cart')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-class CreateOrder(CreateView):
+class Checkout(CreateView):
     model = Order
     template_name = 'carts/cart.html'
     form_class = OrderForm
@@ -121,4 +168,3 @@ class OrderView(ListView):
     def get_queryset(self):
         pk = self.request.user.pk
         return Order.objects.filter(user_id=pk)
-
