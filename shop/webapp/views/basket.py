@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404, HttpResponseRedirect, render
 from django.urls import reverse
 from django.views import View
@@ -10,27 +11,33 @@ from webapp.forms import OrderForm
 class AddToCart(View):
 
     def post(self, request, *args, **kwargs):
-        quantity = 0
+        quantity = int(request.POST.get('qty'))
         pk = self.kwargs.get('pk')
+        item = get_object_or_404(Item, pk=pk)
         if not request.session.get('pk') or not request.session.get('qty'):
             request.session['pk'] = []
             request.session['qty'] = []
         id_list = request.session['pk']
         qty_list = request.session['qty']
-        if pk not in request.session['pk']:
+
+        if pk not in id_list:
             id_list.append(pk)
-            item = get_object_or_404(Item, pk=pk)
-            if item.balance != 0:
-                qty = quantity + 1
+            if item.balance >= quantity:
+                qty = quantity
                 qty_list.append(qty)
+                messages.success(request, f'Item "{item.name}" added to a cart, {qty} pieces')
+            else:
+                messages.error(request, f'Item {item.name} balance is not enough to add to your cart')
 
         elif pk in id_list:
-            product = get_object_or_404(Item, pk=pk)
-            if product.balance != 0:
+            if item.balance >= quantity:
                 index = id_list.index(pk)
                 qty = qty_list[index]
-                qty = qty + 1
+                qty = qty + quantity
                 qty_list[index] = qty
+                messages.success(request, f'Item "{item.name}" added to a cart, {qty} pieces')
+            else:
+                messages.error(request, f'Item {item.name} balance is not enough to add to your cart')
 
         request.session['pk'] = id_list
         request.session['qty'] = qty_list
@@ -40,25 +47,30 @@ class AddToCart(View):
     def get(self, request, *args, **kwargs):
         quantity = 0
         pk = self.kwargs.get('pk')
+        item = get_object_or_404(Item, pk=pk)
         if not request.session.get('pk') or not request.session.get('qty'):
             request.session['pk'] = []
             request.session['qty'] = []
         id_list = request.session['pk']
         qty_list = request.session['qty']
-        if pk not in request.session['pk']:
+        if pk not in id_list:
             id_list.append(pk)
-            product = get_object_or_404(Item, pk=pk)
-            if product.balance != 0:
+            if item.balance > 0:
                 qty = quantity + 1
                 qty_list.append(qty)
+                messages.success(request, f'Item "{item.name}" added to a cart, {qty} pieces')
+            else:
+                messages.error(request, f'Item {item.name} balance is not enough to add to your cart')
 
         elif pk in id_list:
-            product = get_object_or_404(Item, pk=pk)
-            if product.balance != 0:
+            if item.balance > 0:
                 index = id_list.index(pk)
                 qty = qty_list[index]
                 qty = qty + 1
                 qty_list[index] = qty
+                messages.success(request, f'Item "{item.name}" added to a cart, {qty} pieces')
+            else:
+                messages.error(request, f'Item {item.name} balance is not enough to add to your cart')
 
         request.session['pk'] = id_list
         request.session['qty'] = qty_list
@@ -82,7 +94,6 @@ class Cart(TemplateView):
             for pk in id_list:
                 product = dict()
                 item = get_object_or_404(Item, pk=pk)
-                # item['qty'] = qty_list[i]
                 product['name'] = item.name
                 product['pk'] = item.pk
                 product['price'] = item.price
@@ -93,18 +104,17 @@ class Cart(TemplateView):
                 items_sum.append(p_sum)
                 items.append(product)
                 i += 1
-                print(product)
             for k in items_sum:
                 total_sum += k
             request.session['pk'] = id_list
             request.session['qty'] = qty_list
-        print(items)
         return render(request, 'carts/cart.html', {'items': items, 'total_sum': total_sum,
                                                    'form': form})
 
 
 def delete_from_cart(request, pk):
     id_list = request.session.get('pk')
+    item = get_object_or_404(Item, pk=pk)
     index = id_list.index(pk)
     id_list.remove(pk)
     qty_list = request.session.get('qty')
@@ -112,11 +122,13 @@ def delete_from_cart(request, pk):
     qty_list.remove(quantity)
     request.session['pk'] = id_list
     request.session['qty'] = qty_list
+    messages.warning(request, f'Item {item.name} was successfully removed from the cart')
 
     return redirect('webapp:cart')
 
 
 def delete_one_by_one(request, pk):
+    item = get_object_or_404(Item, pk=pk)
     id_list = request.session.get('pk')
     index = id_list.index(pk)
     qty_list = request.session.get('qty')
@@ -126,11 +138,13 @@ def delete_one_by_one(request, pk):
         qty_list[index] = new_quantity
         request.session['pk'] = id_list
         request.session['qty'] = qty_list
+        messages.warning(request, f'1 piece of {item.name} was removed from the cart')
     else:
         id_list.remove(pk)
         qty_list.remove(quantity)
         request.session['pk'] = id_list
         request.session['qty'] = qty_list
+        messages.warning(request, f'Item {item.name} was successfully removed from the cart')
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
