@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Statistics{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Statistics</h5>
+            <p class="card-text">Time spent: {{ statistics.time }}</p>
+            <p class="card-text">Visited pages: {{ statistics.count }}</p>
+  </div>
+</div>
+{% endblock %}

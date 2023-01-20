@@ -1,7 +1,7 @@
 from django.urls import path
 
 from webapp.views import IndexView, ItemView, CreateItem, UpdateItem, DeleteItem, AddToCart, Cart, \
-    OrderView, delete_one_by_one, Checkout, delete_from_cart
+    OrderView, delete_one_by_one, Checkout, delete_from_cart, StatisticsView
 
 app_name = 'webapp'
 
@@ -17,4 +17,5 @@ urlpatterns = [
     path('cart/<int:pk>/delete1/', delete_one_by_one, name='delete_one_from_cart'),
     path('checkout/', Checkout.as_view(), name='checkout'),
     path('orders/', OrderView.as_view(), name='orders'),
+    path('statistics/', StatisticsView.as_view(), name='statistics')
 ]
