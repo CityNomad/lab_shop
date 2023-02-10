@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Sum, F
 
 # Create your models here.
 
@@ -14,7 +15,6 @@ class Item(models.Model):
                                 verbose_name="Category", default=CATEGORIES_CHOICES[0][0])
     balance = models.PositiveIntegerField(verbose_name="Balance")
     price = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Price")
-    orders = models.ManyToManyField('webapp.Order', related_name='items', blank=True)
 
     def __str__(self):
         return f"{self.id}. {self.name}: {self.category}"
@@ -30,8 +30,14 @@ class Order(models.Model):
     phonenumber = models.CharField(max_length=50, null=False, blank=False, verbose_name="Phone number")
     address = models.CharField(max_length=1000, null=False, blank=False, verbose_name="Address")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    items = models.ManyToManyField('webapp.Item', related_name='orders', verbose_name='Products',
+                                      through='webapp.ItemsOrders', through_fields=['order', 'item'])
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="orders",
-                             verbose_name='Пользователь', null=True, blank=True)
+                             verbose_name='User', null=True, blank=True)
+
+    def get_total(self):
+        total = self.itemsorders.aggregate(total=Sum(F("quantity") * F("item__price")))
+        return total["total"]
 
     def __str__(self):
         return f"{self.id}. {self.username}: {self.phonenumber}"
@@ -51,6 +57,9 @@ class ItemsOrders(models.Model):
 
     def __str__(self):
         return f"{self.id}. {self.item}: {self.order}: {self.quantity}"
+
+    def get_sum(self):
+        return self.quantity * self.item.price
 
     class Meta:
         verbose_name = "Confirmed order"

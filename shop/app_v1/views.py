@@ -1,7 +1,8 @@
+from rest_framework import permissions
 from rest_framework.permissions import SAFE_METHODS, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 
-from app_v1.serializers import ItemSerializer, OrderSerializer, ItemsOrdersSerializer
+from app_v1.serializers import ItemSerializer, OrderSerializer, CartSerializer
 from webapp.models import Item, Order, ItemsOrders
 
 
@@ -22,3 +23,12 @@ class OrdersViewSet(ModelViewSet):
     permission_classes = (IsAdminUser,)
 
 
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.order.user == request.user
+
+
+class CartViewSet(ModelViewSet):
+    queryset = ItemsOrders.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = (IsOwnerOrReadOnly,)
