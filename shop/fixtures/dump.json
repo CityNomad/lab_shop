@@ -7,8 +7,7 @@
     "description": "Metal edge skis.\r\n21/22 FISHER SPIDER 62 XTRALITE SKIS W/TURNAMIC CONTROL STEP-IN BINDING.\r\n166 SM",
     "category": "skiing",
     "balance": 7,
-    "price": "300.00",
-    "orders": []
+    "price": "300.00"
   }
 },
 {
@@ -18,9 +17,8 @@
     "name": "Skin Skis",
     "description": "ATOMIC PRO C2 SKINTEC SKIS W/SHIFT PRO CLASSIC",
     "category": "skiing",
-    "balance": 15,
-    "price": "275.00",
-    "orders": []
+    "balance": 164,
+    "price": "275.00"
   }
 },
 {
@@ -31,8 +29,7 @@
     "description": "The bait for fishing.\r\nFISH DRIVE  - a new bait that allows you to catch more fish! It used a special pheromone, which was found not so long ago. It has been proven that it involves different kinds of fish, thus increasing your catch.",
     "category": "fishing",
     "balance": 25,
-    "price": "13.00",
-    "orders": []
+    "price": "13.00"
   }
 },
 {
@@ -43,8 +40,7 @@
     "description": "Network from a scaffold.\r\nlength - 100 m\r\nwidth - 1,6 m\r\nheight -1,6 m\r\nweight - 1 kg",
     "category": "fishing",
     "balance": 100,
-    "price": "20.00",
-    "orders": []
+    "price": "20.00"
   }
 },
 {
@@ -55,8 +51,7 @@
     "description": "Mossy Oak Cotton Mill 2.0 Camo Hunting Bibs, uninsulated came overalls for men.\r\nFabric type: 58% Cotton, 39% Polyester, 3% Spandex\r\nCare Instruction: machine wash\r\nOrigin: imported",
     "category": "hunting",
     "balance": 120,
-    "price": "67.00",
-    "orders": []
+    "price": "67.00"
   }
 },
 {
@@ -67,8 +62,7 @@
     "description": "Custom Guns 00322 Barrel Choke Extension 100mm -0.0 for Molot Vepr VPO-205/206",
     "category": "hunting",
     "balance": 1000,
-    "price": "52.00",
-    "orders": []
+    "price": "52.00"
   }
 },
 {
@@ -79,8 +73,7 @@
     "description": "Advanced capability AR15 armorer’s set with task-specific tools and instruction to build, repair or customize your AR15.",
     "category": "hunting",
     "balance": 125,
-    "price": "800.00",
-    "orders": []
+    "price": "800.00"
   }
 },
 {
@@ -91,8 +84,7 @@
     "description": "Promate Scope Prescription Scuba Dive Snorkeling Mask Optical Corrective Lenses - MK245 RX\r\nPromate Scope Prescription Dive Mask (MK245 RX)\r\n* Ideal for smaller to medium faces (fits almost everyone)\r\n* Face seal size: 4 1/2\" width by  3 3/8\" inches height\r\n* Crystal, liquid silicone injected skirt and strap\r\n* Double edge comfort seal\r\n* Ultra low volume\r\n* Broad peripheral view\r\n* High quality \r\n* Tempered glass lenses\r\n* Optical lenses available from –1.0 to –10.0 by increments of 0.5 (for nearsighted or myopia)\r\n* Optical lenses available from +1.0 to +4.5 by increments of 0.5 (for farsighted or hyperopia)\r\n* Bifocal / Gauge Reader lenses available from +1.0 to +4.0 by increments of 0.5. (top plain without prescription, bottom with magnifier reader)",
     "category": "diving",
     "balance": 200,
-    "price": "90.00",
-    "orders": []
+    "price": "90.00"
   }
 },
 {
@@ -103,132 +95,58 @@
     "description": "*Efficient, fast and for easy kicking. The Binar Blade fins use two materials in the blade, directing the water flow for maximum kicking efficiency. The innovative open heel fins, with dual channels, are for \r\noptimizing water flow. A unique design that allows water exiting located in front of the foot pocket by eliminating resistance during fining. \r\n*EVA fins blade, TPR foot pocket, TPR channels convey greater power with reduced effort, Patented quick-release fin buckles \r\n*Men's Size (Shoes): S(4-6), M(6-9), L(9-11), XL(11-13) \r\nWomen's Size (Shoes): S",
     "category": "diving",
     "balance": 300,
-    "price": "100.00",
-    "orders": []
+    "price": "100.00"
   }
 },
 {
   "model": "webapp.order",
-  "pk": 1,
+  "pk": 8,
   "fields": {
     "username": "admin",
-    "phonenumber": "+99658474839",
-    "address": "adress",
-    "created_at": "2023-01-11T06:28:06.814Z"
+    "phonenumber": "103939393",
+    "address": "some address",
+    "created_at": "2023-02-10T04:04:22.099Z",
+    "user": 1
   }
 },
 {
   "model": "webapp.order",
-  "pk": 2,
+  "pk": 9,
+  "fields": {
+    "username": "user2",
+    "phonenumber": "0494855",
+    "address": "dhfjl45",
+    "created_at": "2023-02-10T04:08:29.765Z",
+    "user": 3
+  }
+},
+{
+  "model": "webapp.order",
+  "pk": 10,
   "fields": {
     "username": "admin",
-    "phonenumber": "+99658474839",
-    "address": "adress",
-    "created_at": "2023-01-11T06:29:30.424Z"
-  }
-},
-{
-  "model": "webapp.order",
-  "pk": 3,
-  "fields": {
-    "username": "admin",
-    "phonenumber": "+99658474839",
-    "address": "adress",
-    "created_at": "2023-01-11T06:30:13.183Z"
-  }
-},
-{
-  "model": "webapp.order",
-  "pk": 4,
-  "fields": {
-    "username": "admin",
-    "phonenumber": "+99658474839",
-    "address": "adress",
-    "created_at": "2023-01-11T06:31:48.368Z"
-  }
-},
-{
-  "model": "webapp.order",
-  "pk": 5,
-  "fields": {
-    "username": "admin",
-    "phonenumber": "+58694040",
-    "address": "ganging",
-    "created_at": "2023-01-11T06:48:25.328Z"
-  }
-},
-{
-  "model": "webapp.order",
-  "pk": 6,
-  "fields": {
-    "username": "user",
-    "phonenumber": "+8765433",
-    "address": "vhvh",
-    "created_at": "2023-01-11T07:16:04.658Z"
-  }
-},
-{
-  "model": "webapp.order",
-  "pk": 7,
-  "fields": {
-    "username": "fred",
-    "phonenumber": "+99706484",
-    "address": "fhfhf",
-    "created_at": "2023-01-11T07:16:49.376Z"
+    "phonenumber": "95040-4",
+    "address": "fkfflf",
+    "created_at": "2023-02-10T05:16:16.746Z",
+    "user": 1
   }
 },
 {
   "model": "webapp.itemsorders",
-  "pk": 1,
+  "pk": 15,
   "fields": {
     "item": 1,
-    "order": 4,
-    "quantity": 2
+    "order": 10,
+    "quantity": 6
   }
 },
 {
   "model": "webapp.itemsorders",
-  "pk": 2,
-  "fields": {
-    "item": 1,
-    "order": 5,
-    "quantity": 1
-  }
-},
-{
-  "model": "webapp.itemsorders",
-  "pk": 3,
+  "pk": 16,
   "fields": {
     "item": 3,
-    "order": 5,
-    "quantity": 1
-  }
-},
-{
-  "model": "webapp.itemsorders",
-  "pk": 4,
-  "fields": {
-    "item": 1,
-    "order": 6,
-    "quantity": 1
-  }
-},
-{
-  "model": "webapp.itemsorders",
-  "pk": 5,
-  "fields": {
-    "item": 1,
-    "order": 7,
-    "quantity": 1
-  }
-},
-{
-  "model": "webapp.itemsorders",
-  "pk": 6,
-  "fields": {
-    "item": 3,
-    "order": 7,
-    "quantity": 2
+    "order": 10,
+    "quantity": 5
   }
 }
 ]
