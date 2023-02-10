@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 # Create your models here.
@@ -29,6 +30,8 @@ class Order(models.Model):
     phonenumber = models.CharField(max_length=50, null=False, blank=False, verbose_name="Phone number")
     address = models.CharField(max_length=1000, null=False, blank=False, verbose_name="Address")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="orders",
+                             verbose_name='Пользователь', null=True, blank=True)
 
     def __str__(self):
         return f"{self.id}. {self.username}: {self.phonenumber}"
